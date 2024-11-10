@@ -8,12 +8,15 @@ const expressLayouts = require("express-ejs-layouts");
 const PORT = process.env.PORT || 3000;
 
 const indexRouter = require("./routes/index");
+const authorRouter = require("./routes/authors");
 
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 app.set("layout", "layouts/layout");
 app.use(expressLayouts);
 app.use(express.static("public"));
+app.use(express.urlencoded({limit: '10mb' , extended: true}))
+app.use(express.json())
 
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
@@ -22,5 +25,6 @@ db.on("error", (err) => console.error(err));
 db.once("open", () => console.log("Connected to mongoose"));
 
 app.use("/", indexRouter);
+app.use("/authors", authorRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
